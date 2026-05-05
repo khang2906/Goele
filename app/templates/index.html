@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GroupRide</title>
+</head>
+<body>
+    <h1>GroupRide</h1>
+    <p>Upcoming events</p>
+
+    {% for event in events %}
+    <div>
+        <h2>{{ event.title }}</h2>
+        <p>Sport: {{ event.sport }}</p>
+        <p>Date: {{ event.date }}</p>
+        <p>Meeting point: {{ event.meeting_point }}</p>
+        <p>Pace: {{ event.pace }}</p>
+    </div>
+    <hr>
+    {% endfor %}
+</body>
+</html>
