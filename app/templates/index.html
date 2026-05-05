@@ -13,7 +13,7 @@
     <div>
         <h2>{{ event.title }}</h2>
         <p>Sport: {{ event.sport }}</p>
-        <p>Date: {{ event.date }}</p>
+        <p>Date: {{ event.date.strftime("%d.%m.%Y %H:%M") }}</p>
         <p>Meeting point: {{ event.meeting_point }}</p>
         <p>Pace: {{ event.pace }}</p>
     </div>

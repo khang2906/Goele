@@ -1,44 +1,75 @@
-from fastapi import FastAPI, Request
+from contextlib import asynccontextmanager
+from datetime import datetime
+
+from fastapi import Depends, FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
 
-app = FastAPI()
+from app.database import Base, SessionLocal, engine, get_db
+from app.models import Event
 
-# Serve files from /static (CSS, images, JS) at the URL path /static
+
+def seed_events() -> None:
+    """Add placeholder events if the database is empty."""
+    db = SessionLocal()
+    try:
+        if db.query(Event).count() > 0:
+            return
+        db.add_all([
+            Event(
+                sport="bike",
+                title="Morning Ride to Starnberger See",
+                date=datetime(2026, 5, 10, 8, 0),
+                meeting_point="Marienplatz, Munich",
+                description="A relaxed morning ride along the Isar to Starnberger See.",
+                pace="moderate",
+                max_participants=10,
+            ),
+            Event(
+                sport="motorcycle",
+                title="Sunday Motorcycle Tour — Bavarian Alps",
+                date=datetime(2026, 5, 12, 9, 0),
+                meeting_point="Siegestor, Munich",
+                description="Scenic tour through the foothills of the Alps.",
+                pace="relaxed",
+                max_participants=8,
+            ),
+            Event(
+                sport="run",
+                title="English Garden 10k Run",
+                date=datetime(2026, 5, 14, 7, 0),
+                meeting_point="Chinesischer Turm, Munich",
+                description="A brisk 10k loop around the English Garden.",
+                pace="fast",
+                max_participants=15,
+            ),
+        ])
+        db.commit()
+    finally:
+        db.close()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Runs once on startup: create tables if they don't exist, then seed
+    Base.metadata.create_all(bind=engine)
+    seed_events()
+    yield  # server runs here; anything after yield runs on shutdown
+
+
+app = FastAPI(lifespan=lifespan)
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="app/templates")
 
-# Hardcoded placeholder events — will be replaced by DB queries later
-FAKE_EVENTS = [
-    {
-        "title": "Morning Ride to Starnberger See",
-        "sport": "bike",
-        "date": "2026-05-10 08:00",
-        "meeting_point": "Marienplatz, Munich",
-        "pace": "moderate",
-    },
-    {
-        "title": "Sunday Motorcycle Tour — Bavarian Alps",
-        "sport": "motorcycle",
-        "date": "2026-05-12 09:00",
-        "meeting_point": "Siegestor, Munich",
-        "pace": "relaxed",
-    },
-    {
-        "title": "English Garden 10k Run",
-        "sport": "run",
-        "date": "2026-05-14 07:00",
-        "meeting_point": "Chinesischer Turm, Munich",
-        "pace": "fast",
-    },
-]
-
 
 @app.get("/")
-async def index(request: Request):
-    """Render the homepage with a list of upcoming events."""
+async def index(request: Request, db: Session = Depends(get_db)):
+    """Render the homepage with upcoming events ordered by date."""
+    events = db.query(Event).order_by(Event.date).all()
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "events": FAKE_EVENTS},
+        {"request": request, "events": events},
     )
