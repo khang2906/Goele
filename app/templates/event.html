@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ event.title }} — GroupRide</title>
+</head>
+<body>
+    <a href="/">← Back to events</a>
+
+    <h1>{{ event.title }}</h1>
+
+    <p>Sport: {{ event.sport }}</p>
+    <p>Date: {{ event.date.strftime("%d.%m.%Y %H:%M") }}</p>
+    <p>Meeting point: {{ event.meeting_point }}</p>
+    <p>Pace: {{ event.pace }}</p>
+
+    {% if event.max_participants %}
+    <p>Max participants: {{ event.max_participants }}</p>
+    {% endif %}
+
+    {% if event.description %}
+    <p>{{ event.description }}</p>
+    {% endif %}
+
+    {% if event.route_link %}
+    <p>Route: <a href="{{ event.route_link }}" target="_blank">View on Komoot/Strava</a></p>
+    {% endif %}
+</body>
+</html>

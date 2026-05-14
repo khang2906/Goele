@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from datetime import datetime
 
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -65,6 +65,18 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 
+@app.get("/events/{event_id}")
+async def event_detail(event_id: int, request: Request, db: Session = Depends(get_db)):
+    """Render the detail page for a single event."""
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return templates.TemplateResponse(
+        "event.html",
+        {"request": request, "event": event},
+    )
+
+
 @app.get("/")
 async def index(request: Request, db: Session = Depends(get_db)):
     """Render the homepage with upcoming events ordered by date."""
@@ -72,4 +84,16 @@ async def index(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
         "index.html",
         {"request": request, "events": events},
+    )
+
+
+@app.get("/events/{event_id}")
+async def event_detail(event_id: int, request: Request, db: Session = Depends(get_db)):
+    """Render the detail page for a single event."""
+    event = db.query(Event).filter(Event.id == event_id).first()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return templates.TemplateResponse(
+        "event.html",
+        {"request": request, "event": event},
     )
