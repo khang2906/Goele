@@ -1,4 +1,4 @@
-# GroupRide
+# Göle
 
 A web app for organizing group meetups for cyclists, motorcyclists, and runners.
 A user posts an event (sport, date/time, meeting point, route, pace), others
