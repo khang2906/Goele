@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create event — GroupRide</title>
+</head>
+<body>
+    <a href="/">← Back to events</a>
+    <h1>Create a new event</h1>
+
+    <form action="/events/new" method="post">
+        <p>
+            <label>Sport:
+                <select name="sport" required>
+                    <option value="bike">Bike</option>
+                    <option value="motorcycle">Motorcycle</option>
+                    <option value="run">Run</option>
+                </select>
+            </label>
+        </p>
+        <p>
+            <label>Title:
+                <input type="text" name="title" required>
+            </label>
+        </p>
+        <p>
+            <label>Date and time:
+                <input type="datetime-local" name="date" required>
+            </label>
+        </p>
+        <p>
+            <label>Meeting point:
+                <input type="text" name="meeting_point" required>
+            </label>
+        </p>
+        <p>
+            <label>Pace:
+                <input type="text" name="pace" placeholder="e.g. relaxed, moderate, fast" required>
+            </label>
+        </p>
+        <p>
+            <label>Max participants (optional):
+                <input type="number" name="max_participants" min="1">
+            </label>
+        </p>
+        <p>
+            <label>Route link — Komoot/Strava (optional):
+                <input type="url" name="route_link">
+            </label>
+        </p>
+        <p>
+            <label>Description (optional):<br>
+                <textarea name="description" rows="4" cols="40"></textarea>
+            </label>
+        </p>
+        <button type="submit">Create event</button>
+    </form>
+</body>
+</html>
