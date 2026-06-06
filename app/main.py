@@ -67,12 +67,20 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 @app.get("/")
-async def index(request: Request, db: Session = Depends(get_db)):
-    """Render the homepage with upcoming events ordered by date."""
-    events = db.query(Event).order_by(Event.date).all()
+async def index(
+    request: Request,
+    sport: str | None = None,
+    db: Session = Depends(get_db),
+):
+    """Render the homepage with upcoming events, optionally filtered by sport."""
+    # Query parameters (e.g. ?sport=bike) become function arguments automatically.
+    # Build the query in pieces so we can conditionally add a WHERE clause.
+    query = db.query(Event).order_by(Event.date)
+    if sport:
+        query = query.filter(Event.sport == sport)
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "events": events},
+        {"request": request, "events": query.all(), "selected_sport": sport},
     )
 
 

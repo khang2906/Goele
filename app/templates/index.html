@@ -10,6 +10,21 @@
     <p><a href="/events/new">+ Create a new event</a></p>
     <p>Upcoming events</p>
 
+    <form method="get" action="/">
+        <label>Filter by sport:
+            <select name="sport" onchange="this.form.submit()">
+                <option value="">All sports</option>
+                <option value="bike" {% if selected_sport == "bike" %}selected{% endif %}>Bike</option>
+                <option value="motorcycle" {% if selected_sport == "motorcycle" %}selected{% endif %}>Motorcycle</option>
+                <option value="run" {% if selected_sport == "run" %}selected{% endif %}>Run</option>
+            </select>
+        </label>
+    </form>
+
+    {% if not events %}
+    <p><em>No events match.</em></p>
+    {% endif %}
+
     {% for event in events %}
     <div>
         <h2><a href="/events/{{ event.id }}">{{ event.title }}</a></h2>
