@@ -8,7 +8,7 @@
 - [ ] Map showing meeting point (Leaflet + OpenStreetMap)
 - [x] RSVP form (name only, no account)
 - [x] RSVP list on event detail page
-- [ ] Filter event list by sport and city
+- [x] Filter event list by sport (city filter deferred — location will become structured via picker)
 - [ ] Set up DB migrations (Alembic) — BLOCKER before deploy: once real
       users exist we can't rebuild the DB to apply schema changes
 - [ ] Deploy to Fly.io or Railway

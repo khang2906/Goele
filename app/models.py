@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -18,6 +18,8 @@ class Event(Base):
     description: Mapped[str | None] = mapped_column(String, nullable=True)
     pace: Mapped[str] = mapped_column(String)
     max_participants: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lng: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # cascade="all, delete-orphan" means RSVPs are removed when their event is deleted
     rsvps: Mapped[list["RSVP"]] = relationship(
