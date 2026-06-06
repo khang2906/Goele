@@ -15,10 +15,6 @@
     <p>Meeting point: {{ event.meeting_point }}</p>
     <p>Pace: {{ event.pace }}</p>
 
-    {% if event.max_participants %}
-    <p>Max participants: {{ event.max_participants }}</p>
-    {% endif %}
-
     {% if event.description %}
     <p>{{ event.description }}</p>
     {% endif %}
@@ -26,5 +22,29 @@
     {% if event.route_link %}
     <p>Route: <a href="{{ event.route_link }}" target="_blank">View on Komoot/Strava</a></p>
     {% endif %}
+
+    <h2>
+        RSVPs ({{ event.rsvps | length }}{% if event.max_participants %} / {{ event.max_participants }}{% endif %})
+    </h2>
+
+    {% if event.rsvps %}
+    <ul>
+        {% for rsvp in event.rsvps %}
+        <li>{{ rsvp.name }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No one's RSVP'd yet — be the first.</p>
+    {% endif %}
+
+    <h3>RSVP</h3>
+    <form action="/events/{{ event.id }}/rsvp" method="post">
+        <p>
+            <label>Your name:
+                <input type="text" name="name" required>
+            </label>
+        </p>
+        <button type="submit">RSVP</button>
+    </form>
 </body>
 </html>
